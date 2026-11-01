@@ -1,0 +1,55 @@
+{
+  "reports_evaluated": 1,
+  "evaluation_questions": 10,
+  "answer_accuracy": 1.0,
+  "citation_faithfulness": 1.0,
+  "retrieval_recall_at_2": 1.0,
+  "selected_chunk_size": 500,
+  "selected_top_k": 2,
+  "configuration_results": [
+    {
+      "chunk_size": 500,
+      "top_k": 2,
+      "answer_accuracy": 1.0,
+      "citation_faithfulness": 1.0,
+      "retrieval_recall_at_k": 1.0
+    },
+    {
+      "chunk_size": 500,
+      "top_k": 4,
+      "answer_accuracy": 1.0,
+      "citation_faithfulness": 1.0,
+      "retrieval_recall_at_k": 1.0
+    },
+    {
+      "chunk_size": 900,
+      "top_k": 2,
+      "answer_accuracy": 0.9,
+      "citation_faithfulness": 1.0,
+      "retrieval_recall_at_k": 1.0
+    },
+    {
+      "chunk_size": 900,
+      "top_k": 4,
+      "answer_accuracy": 0.9,
+      "citation_faithfulness": 1.0,
+      "retrieval_recall_at_k": 1.0
+    },
+    {
+      "chunk_size": 1300,
+      "top_k": 2,
+      "answer_accuracy": 1.0,
+      "citation_faithfulness": 1.0,
+      "retrieval_recall_at_k": 1.0
+    },
+    {
+      "chunk_size": 1300,
+      "top_k": 4,
+      "answer_accuracy": 1.0,
+      "citation_faithfulness": 1.0,
+      "retrieval_recall_at_k": 1.0
+    }
+  ],
+  "dataset": "fictional Northstar Components FY2024 report",
+  "note": "Synthetic single-document benchmark; not a real-world accuracy claim."
+}

@@ -1,0 +1,42 @@
+[
+  {
+    "question": "What was Northstar's revenue in fiscal year 2024?",
+    "answer_contains": "$2.4 billion"
+  },
+  {
+    "question": "How much net income did Northstar report in fiscal year 2024?",
+    "answer_contains": "$186 million"
+  },
+  {
+    "question": "What was the operating margin in fiscal year 2024?",
+    "answer_contains": "11.6%"
+  },
+  {
+    "question": "What were diluted earnings per share in fiscal year 2024?",
+    "answer_contains": "$3.72"
+  },
+  {
+    "question": "How much did Northstar spend on capital expenditures in fiscal year 2024?",
+    "answer_contains": "$142 million"
+  },
+  {
+    "question": "How much cash and cash equivalents did Northstar have at year end?",
+    "answer_contains": "$410 million"
+  },
+  {
+    "question": "How many people did Northstar employ at year end?",
+    "answer_contains": "8,450"
+  },
+  {
+    "question": "How much revenue did the Industrial Systems segment generate?",
+    "answer_contains": "$1.08 billion"
+  },
+  {
+    "question": "What revenue growth does management expect for fiscal year 2025?",
+    "answer_contains": "5% to 7%"
+  },
+  {
+    "question": "What are Northstar's principal business risks?",
+    "answer_contains": "supply-chain concentration"
+  }
+]
