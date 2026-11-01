@@ -1,0 +1,26 @@
+{
+  "dataset": "deterministic synthetic retail sales",
+  "source_sales_rows": 5000,
+  "source_customer_rows": 500,
+  "source_product_rows": 50,
+  "fact_tables_in_model": 1,
+  "dimension_tables_in_model": 3,
+  "dax_measures_in_model": 6,
+  "relationships_in_model": 3,
+  "source_data_quality_checks_passed": 8,
+  "source_data_quality_checks_total": 8,
+  "source_data_quality_pass_rate": 1.0,
+  "source_data_checks": {
+    "unique_customer_keys": true,
+    "unique_product_keys": true,
+    "unique_sales_keys": true,
+    "sales_customer_keys_resolve": true,
+    "sales_product_keys_resolve": true,
+    "positive_quantities": true,
+    "discounts_in_range": true,
+    "nonnegative_prices": true
+  },
+  "spark_delta_pipeline_executed": false,
+  "spark_delta_metrics": null,
+  "note": "Source fixture and model metadata metrics only. Spark/Delta output metrics are included only after a successful pipeline run."
+}

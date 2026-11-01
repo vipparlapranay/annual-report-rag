@@ -1,0 +1,41 @@
+table DimProduct
+	lineageTag: 386cf64a-dc35-4ae3-bac4-59a11eaf8c65
+
+	column product_id
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: product_id
+		lineageTag: 22ea3493-50ba-459e-87e0-13eea80d10b2
+
+	column product_name
+		dataType: string
+		summarizeBy: none
+		sourceColumn: product_name
+		lineageTag: a0360cbd-e9a2-4bf1-9ced-d6c85ab92893
+
+	column category
+		dataType: string
+		summarizeBy: none
+		sourceColumn: category
+		lineageTag: e0fd0c16-16dd-4458-ab71-c39e2127aca8
+
+	column subcategory
+		dataType: string
+		summarizeBy: none
+		sourceColumn: subcategory
+		lineageTag: 71c1f62d-06d0-41f0-b39f-b0ec5b49943b
+
+	column unit_price
+		dataType: decimal
+		summarizeBy: none
+		sourceColumn: unit_price
+		lineageTag: bba80150-c23c-4409-b95d-840877e9fa8c
+
+	partition DimProduct = m
+		mode: import
+		source =
+				let
+					Source = Sql.Database(LakehouseSqlEndpoint, LakehouseDatabase),
+					Table = Source{[Schema="dbo", Item="dim_product"]}[Data]
+				in
+					Table

@@ -5,3 +5,6 @@ __pycache__/
 .chroma/
 *.egg-info/
 *.py[cod]
+fabric_lakehouse/data/raw/
+fabric_lakehouse/output/
+fabric_lakehouse/.venv/

@@ -1,0 +1,42 @@
+table DimCustomer
+	lineageTag: 648bb415-cc15-40cb-a306-49642e3e5268
+
+	column customer_id
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: customer_id
+		lineageTag: f8a605fd-29cf-47c6-8b05-d6d10b3e8865
+
+	column customer_name
+		dataType: string
+		summarizeBy: none
+		sourceColumn: customer_name
+		lineageTag: 890e8730-0c1a-46e8-92c7-f033173b788f
+
+	column segment
+		dataType: string
+		summarizeBy: none
+		sourceColumn: segment
+		lineageTag: f6bf2337-e17f-46af-b064-d2ddbeed75c8
+
+	column region
+		dataType: string
+		summarizeBy: none
+		sourceColumn: region
+		lineageTag: f3354772-a4ef-4bb3-a05e-13bdba1cab33
+
+	column signup_date
+		dataType: dateTime
+		formatString: Short Date
+		summarizeBy: none
+		sourceColumn: signup_date
+		lineageTag: 212ba0dd-2d55-476a-8da8-07e505c3fb2e
+
+	partition DimCustomer = m
+		mode: import
+		source =
+				let
+					Source = Sql.Database(LakehouseSqlEndpoint, LakehouseDatabase),
+					Table = Source{[Schema="dbo", Item="dim_customer"]}[Data]
+				in
+					Table

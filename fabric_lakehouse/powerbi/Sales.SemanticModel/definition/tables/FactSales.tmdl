@@ -1,0 +1,89 @@
+table FactSales
+	lineageTag: 0c93ff75-6d3b-458e-b3db-419b2b2e8c07
+
+	column sale_id
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: sale_id
+		lineageTag: b0316d3b-6e9a-48ef-a1a6-8588b986a645
+
+	column date_key
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: date_key
+		lineageTag: 3085794f-6649-4fa2-a7f3-52ee3ed24ad8
+
+	column customer_id
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: customer_id
+		lineageTag: 9755f672-a0d3-4916-8ca6-34e68f171824
+
+	column product_id
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: product_id
+		lineageTag: ec16744e-f449-4cfd-aad5-a5c58073e7c7
+
+	column quantity
+		dataType: int64
+		summarizeBy: sum
+		sourceColumn: quantity
+		lineageTag: 3c92228c-e37f-4326-8884-25b8c5a7a95d
+
+	column unit_price
+		dataType: decimal
+		summarizeBy: none
+		sourceColumn: unit_price
+		lineageTag: c82f7240-b68a-4835-81c7-f79c7fe276a8
+
+	column discount_pct
+		dataType: decimal
+		summarizeBy: none
+		sourceColumn: discount_pct
+		lineageTag: 7ec46b50-1c47-43d2-b09d-b66dc739b226
+
+	column channel
+		dataType: string
+		summarizeBy: none
+		sourceColumn: channel
+		lineageTag: 49ad0393-7d14-4283-bf2f-600aa431d23f
+
+	measure 'Total Revenue' =
+			SUMX(FactSales, FactSales[quantity] * FactSales[unit_price] * (1 - FactSales[discount_pct]))
+		formatString: $#,0.00;($#,0.00);$#,0.00
+		lineageTag: 435c0025-d24c-45d2-8d55-7d4be6c7d7a1
+
+	measure 'Sales Lines' =
+			DISTINCTCOUNT(FactSales[sale_id])
+		formatString: #,0
+		lineageTag: eac2eaec-9b9d-4c76-9411-4dcbf7a5a85c
+
+	measure 'Units Sold' =
+			SUM(FactSales[quantity])
+		formatString: #,0
+		lineageTag: 1c327545-205f-46a7-a6b8-3f841968a5d7
+
+	measure 'Average Line Revenue' =
+			DIVIDE([Total Revenue], [Sales Lines])
+		formatString: $#,0.00;($#,0.00);$#,0.00
+		lineageTag: a169c50b-d722-4fc6-8cae-bc7c75ccd083
+
+	measure 'Revenue Previous Year' =
+			CALCULATE([Total Revenue], SAMEPERIODLASTYEAR(DimDate[date]))
+		formatString: $#,0.00;($#,0.00);$#,0.00
+		lineageTag: 0a71d23b-7ecb-4faa-85eb-a73e64bf1858
+
+	measure 'Revenue YoY %' =
+			DIVIDE([Total Revenue] - [Revenue Previous Year], [Revenue Previous Year])
+		formatString: 0.0%;(0.0%);0.0%
+		lineageTag: c5e890d8-6d8d-4d66-929b-cbde39831e20
+
+	partition FactSales = m
+		mode: import
+		source =
+				let
+					Source = Sql.Database(LakehouseSqlEndpoint, LakehouseDatabase),
+					Table = Source{[Schema="dbo", Item="fact_sales"]}[Data]
+				in
+					Table

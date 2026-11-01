@@ -1,0 +1,17 @@
+model Sales
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-US
+
+	expression LakehouseSqlEndpoint =
+		"YOUR-LAKEHOUSE-SQL-ENDPOINT.datawarehouse.fabric.microsoft.com" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+		lineageTag: 56f12c67-7a41-45d7-8fd1-1b4e94877981
+
+	expression LakehouseDatabase =
+		"YOUR-LAKEHOUSE-DATABASE" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+		lineageTag: 401d05bf-3052-45f9-885c-c13da47c20e2
+
+	ref table DimDate
+	ref table DimCustomer
+	ref table DimProduct
+	ref table FactSales

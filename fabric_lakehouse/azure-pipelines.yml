@@ -1,0 +1,95 @@
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - fabric_lakehouse/**
+
+pr:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - fabric_lakehouse/**
+
+stages:
+  - stage: Validate
+    displayName: Build and validate lakehouse
+    jobs:
+      - job: SparkQualityGate
+        pool:
+          vmImage: ubuntu-latest
+        steps:
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: "3.12"
+          - task: JavaToolInstaller@0
+            inputs:
+              versionSpec: "17"
+              jdkArchitectureOption: x64
+              jdkSourceOption: PreInstalled
+          - script: |
+              python -m pip install --upgrade pip
+              python -m pip install -e ".[dev]"
+            workingDirectory: fabric_lakehouse
+            displayName: Install Spark project
+          - script: python -m pytest -q
+            workingDirectory: fabric_lakehouse
+            displayName: Test generator and Power BI model
+          - script: |
+              python -m fabric_lakehouse --generate-sample-data \
+                --input-dir "$(Build.ArtifactStagingDirectory)/input" \
+                --output-dir "$(Build.ArtifactStagingDirectory)/lakehouse" \
+                --sales-rows 5000
+            workingDirectory: fabric_lakehouse
+            displayName: Run bronze / silver / gold Spark pipeline
+          - script: |
+              python scripts/evaluate_sample.py \
+                --input-dir "$(Build.ArtifactStagingDirectory)/input" \
+                --spark-metrics "$(Build.ArtifactStagingDirectory)/lakehouse/metrics.json" \
+                --output "$(Build.ArtifactStagingDirectory)/evaluation-results.json"
+            workingDirectory: fabric_lakehouse
+            displayName: Measure data quality and model metrics
+          - publish: $(Build.ArtifactStagingDirectory)/lakehouse
+            artifact: lakehouse-validation
+            displayName: Publish validated Delta tables and metrics
+          - publish: $(Build.ArtifactStagingDirectory)/evaluation-results.json
+            artifact: evaluation-metrics
+            displayName: Publish evaluation summary
+
+  - stage: PromoteToTest
+    displayName: Promote Fabric Dev workspace to Test
+    dependsOn: Validate
+    condition: and(
+      succeeded(),
+      eq(variables['Build.SourceBranch'], 'refs/heads/main'),
+      ne(variables['FABRIC_AZURE_SERVICE_CONNECTION'], ''),
+      ne(variables['FABRIC_DEPLOYMENT_PIPELINE_ID'], ''),
+      ne(variables['FABRIC_DEV_STAGE_ID'], ''),
+      ne(variables['FABRIC_TEST_STAGE_ID'], '')
+      )
+    jobs:
+      - deployment: PromoteToTestWorkspace
+        environment: Fabric-Test
+        pool:
+          vmImage: ubuntu-latest
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
+                - task: AzureCLI@2
+                  displayName: Promote validated Dev items into Test
+                  inputs:
+                    azureSubscription: $(FABRIC_AZURE_SERVICE_CONNECTION)
+                    scriptType: bash
+                    scriptLocation: inlineScript
+                    inlineScript: |
+                      export FABRIC_ACCESS_TOKEN="$(az account get-access-token --resource https://api.fabric.microsoft.com --query accessToken --output tsv)"
+                      python fabric_lakehouse/scripts/deploy_fabric.py \
+                        --pipeline-id "$(FABRIC_DEPLOYMENT_PIPELINE_ID)" \
+                        --source-stage-id "$(FABRIC_DEV_STAGE_ID)" \
+                        --target-stage-id "$(FABRIC_TEST_STAGE_ID)" \
+                        --note "Promote build $(Build.BuildNumber) to Test"

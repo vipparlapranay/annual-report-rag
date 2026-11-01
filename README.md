@@ -2,6 +2,10 @@
 
 A local-first, citation-grounded API for asking questions about annual reports. The included Northstar Components report is synthetic and exists only for repeatable tests; do not present its figures as real company information.
 
+## Other project
+
+- [Microsoft Fabric Lakehouse + Power BI CI/CD](./fabric_lakehouse/README.md): reproducible PySpark/Delta medallion pipeline, star-schema TMDL model, synthetic data, and gated Azure DevOps Dev-to-Test deployment.
+
 ## What it does
 
 - Ingests PDF, TXT, and Markdown reports, splits text into overlapping chunks, and indexes normalized hashed-token embeddings in persistent Chroma.

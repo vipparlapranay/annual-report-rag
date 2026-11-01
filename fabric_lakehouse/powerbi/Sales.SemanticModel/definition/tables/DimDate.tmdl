@@ -1,0 +1,64 @@
+table DimDate
+	lineageTag: a39c948d-0d8c-4c18-a063-b22578f0864a
+	isDateTable
+	dateColumn: date
+
+	column date_key
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: date_key
+		lineageTag: 4f0e8874-81c2-4298-aabe-dff87e5531dd
+
+	column date
+		dataType: dateTime
+		formatString: Short Date
+		summarizeBy: none
+		sourceColumn: date
+		lineageTag: 638ed38a-2eef-4e51-807b-c09e8a7db9cb
+
+	column year
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: year
+		lineageTag: e77f4b24-778d-4811-8250-d8af1244bb7f
+
+	column quarter
+		dataType: int64
+		formatString: "'Q'0"
+		summarizeBy: none
+		sourceColumn: quarter
+		lineageTag: 8748ef29-a9d5-49f3-a510-bf5aaaf97464
+
+	column month
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: month
+		lineageTag: b2856268-58dd-4bdb-92d4-28daae6a371c
+
+	column month_name
+		dataType: string
+		summarizeBy: none
+		sourceColumn: month_name
+		lineageTag: 12c12cd0-46fa-4767-aa2e-6da937720d5a
+
+	column day
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: day
+		lineageTag: a422719a-f574-45a1-90fa-2a7c944d7f85
+
+	column day_of_week
+		dataType: int64
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: day_of_week
+		lineageTag: 821a2567-eb47-449b-bacc-d7ef403bf5aa
+
+	partition DimDate = m
+		mode: import
+		source =
+				let
+					Source = Sql.Database(LakehouseSqlEndpoint, LakehouseDatabase),
+					Table = Source{[Schema="dbo", Item="dim_date"]}[Data]
+				in
+					Table
